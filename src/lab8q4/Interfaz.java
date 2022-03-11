@@ -305,7 +305,8 @@ public class Interfaz extends javax.swing.JFrame {
     private void jbColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbColorActionPerformed
         // TODO add your handling code here:
         JColorChooser color = new JColorChooser();
-       Color=JColorChooser.showDialog(this,"Seleccione un color ", Color.WHITE);
+       Color=JColorChooser.showDialog(this,"Seleccione un color ", Color.BLUE);
+       color.setBackground(Color);
         
         
         

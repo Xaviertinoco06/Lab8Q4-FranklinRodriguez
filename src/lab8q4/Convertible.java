@@ -8,6 +8,14 @@ package lab8q4;
  *
  * @author xavie
  */
-public class Convertible {
+public class Convertible extends Carros{
+    
+    public Convertible(String nombreCorredor, int ID, String tipoCarro, int Distancia, java.awt.Color Color) {
+        super(nombreCorredor, ID, tipoCarro, Distancia, Color);
+        velocidadMinima=20;
+        velocidadMaxima=200;
+        
+        
+    }
     
 }

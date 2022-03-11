@@ -8,6 +8,13 @@ package lab8q4;
  *
  * @author xavie
  */
-public class Nascar {
+public class Nascar extends Carros{
+    
+    public Nascar(String nombreCorredor, int ID, String tipoCarro, int Distancia, java.awt.Color Color) {
+        super(nombreCorredor, ID, tipoCarro, Distancia, Color);
+        velocidadMinima=40;
+        velocidadMaxima=180;
+    }
+    
     
 }
