@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JColorChooser;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.text.StyleConstants;
 
 /**
@@ -30,8 +31,9 @@ public class Interfaz extends javax.swing.JFrame {
         tabla = false;
 
         try {
-            initComponents();
+
             Vehiculos = new RandomAccessFile("vehiculos.dr", "rw");
+            initComponents();
             Cajitas();
 
         } catch (IOException x) {
@@ -111,6 +113,11 @@ public class Interfaz extends javax.swing.JFrame {
         jScrollPane1.setViewportView(jTable1);
 
         jbAgregar.setText("Agregar");
+        jbAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbAgregarActionPerformed(evt);
+            }
+        });
 
         jcAgregar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -309,8 +316,8 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jbContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbContinuarActionPerformed
         // TODO add your handling code here:
-        if(tabla){
-           ProBar();
+        if (tabla) {
+            ProBar();
         }
     }//GEN-LAST:event_jbContinuarActionPerformed
 
@@ -324,7 +331,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jbUsarPistaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbUsarPistaActionPerformed
         // TODO add your handling code here:
-         
+
     }//GEN-LAST:event_jbUsarPistaActionPerformed
 
     private void jtPistaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtPistaActionPerformed
@@ -353,11 +360,12 @@ public class Interfaz extends javax.swing.JFrame {
         try {
             double Distancia = 0;
             int ID = Integer.parseInt(jtIdentificador.getText());
-            String tipoCarro = String.valueOf(jcTipo.getSelectedIndex());
+            String tipoCarro = String.valueOf(jcTipo.getSelectedItem());
             String nombreCorredor = jtCorredor.getText();
             int Escala = Color.getRGB();
             int velocidadMinima = (tipoCarro.equals("Convertible") ? 30 : ((tipoCarro.equals("McQueen")) ? 40 : 20));
             int velocidadMaxima = (tipoCarro.equals("Convertible") ? 30 : ((tipoCarro.equals("McQueen")) ? 40 : 20));
+            boolean corredor = false;
             if (ValidarSiEsUnico(ID)) {
                 Vehiculos.writeInt(velocidadMinima);
                 Vehiculos.writeInt(velocidadMaxima);
@@ -367,12 +375,15 @@ public class Interfaz extends javax.swing.JFrame {
                 Vehiculos.writeInt(Escala);
                 Vehiculos.writeUTF(tipoCarro);
                 Cajitas();
+
                 JOptionPane.showMessageDialog(null, "Ya existe");
 
+            } else {
+                JOptionPane.showMessageDialog(null, "ingreasado");
             }
 
         } catch (IOException x) {
-
+            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, x);
         }
 
 
@@ -384,16 +395,22 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jcAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcAgregarActionPerformed
         // TODO add your handling code here:
- try {
-           Cajitas();
-        } catch (IOException ex) {
-        }
+
     }//GEN-LAST:event_jcAgregarActionPerformed
 
     private void jtLargoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtLargoKeyTyped
         // TODO add your handling code here:
-        
+
     }//GEN-LAST:event_jtLargoKeyTyped
+
+    private void jbAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAgregarActionPerformed
+        // TODO add your handling code here:
+        try {
+            Cajitas();
+        } catch (IOException ex) {
+
+        }
+    }//GEN-LAST:event_jbAgregarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -430,16 +447,16 @@ public class Interfaz extends javax.swing.JFrame {
         });
     }
 
-    public void ProBar(){
+    public void ProBar() {
         int fila = Integer.parseInt(String.valueOf(jTable1.getSelectedRow()));
-        int ID = Integer.parseInt(String.valueOf(jTable1.getValueAt(fila,0)));
+        int ID = Integer.parseInt(String.valueOf(jTable1.getValueAt(fila, 0)));
     }
-    
+
     public void Cajitas() throws IOException {
-        jcTipo.removeAllItems();
+        jcAgregar.removeAllItems();
         Vehiculos.seek(0);
         while (Vehiculos.getFilePointer() < Vehiculos.length()) {
-            jcTipo.addItem(String.valueOf(Vehiculos.readInt()));
+            jcAgregar.addItem(String.valueOf(Vehiculos.readInt()));
             Vehiculos.readDouble();
             Vehiculos.readUTF();
             Vehiculos.skipBytes(12);
@@ -462,6 +479,37 @@ public class Interfaz extends javax.swing.JFrame {
         }
         return true;
     }
+     public boolean carroEnTabla(String id){
+        int cantidadLista = jTable1.getRowCount();
+        System.out.println(cantidadLista);
+        for(int i = 0;i<cantidadLista;i++){
+            System.out.println(jTable1.getValueAt(i,0));
+             if(jTable1.getValueAt(i, 0)==id){
+                 
+                 
+                 return true;
+             }
+        }
+        
+        return false;
+        
+    }
+
+    private void AgregarTabla() throws IOException {
+        DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
+        int ID = Integer.parseInt(String.valueOf(jcAgregar.getSelectedItem()));
+        ValidarSiEsUnico(ID);
+        Double Distancia = Vehiculos.readDouble();
+        String corredor = Vehiculos.readUTF();
+        if (!carroEnTabla(String.valueOf(jcAgregar.getSelectedItem()))) {
+            Object[] i = {ID, corredor, Distancia};
+            modelo.addRow(i);
+        } else {
+            JOptionPane.showMessageDialog(null, "Compitiendo");
+        }
+
+    }
+    
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
