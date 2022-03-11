@@ -5,12 +5,14 @@
 package lab8q4;
 
 import java.awt.Color;
+import java.io.RandomAccessFile;
 
 /**
  *
  * @author xavie
  */
 public class Carros {
+  
     private String nombreCorredor;
     private int ID;
     private String tipoCarro;
@@ -18,6 +20,8 @@ public class Carros {
     private Color Color;
  int velocidadMinima;
  int velocidadMaxima;
+ 
+ 
     
     
     
@@ -74,10 +78,12 @@ public class Carros {
     public String toString() {
         return "Carros{" + "nombreCorredor=" + nombreCorredor + ", ID=" + ID + ", tipoCarro=" + tipoCarro + ", Distancia=" + Distancia + ", Color=" + Color + '}';
     }
+   
+    }
     
     
     
     
     
     
-}
+

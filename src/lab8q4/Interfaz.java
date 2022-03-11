@@ -5,7 +5,12 @@
 package lab8q4;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JColorChooser;
+import javax.swing.JOptionPane;
 import javax.swing.text.StyleConstants;
 
 /**
@@ -17,10 +22,23 @@ public class Interfaz extends javax.swing.JFrame {
     /**
      * Creates new form Interfaz
      */
+    RandomAccessFile Vehiculos;
     private Color Color;
-    public Interfaz() {
+    
+    public Interfaz(){
+        
+        try{
+            initComponents();
+            Vehiculos=new RandomAccessFile ("vehiculos.dr","rw");
+            Cajitas();
+            
+            
+            
+        }catch(IOException x){
+             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, x);
+        }
        
-        initComponents();
+        
     }
 
     /**
@@ -95,6 +113,12 @@ public class Interfaz extends javax.swing.JFrame {
 
         jbAgregar.setText("Agregar");
 
+        jcAgregar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcAgregarActionPerformed(evt);
+            }
+        });
+
         jLabel3.setText("Numero Identificador");
 
         jtCorredor.addActionListener(new java.awt.event.ActionListener() {
@@ -111,7 +135,11 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
 
-        jcTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jcTipo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jcTipoActionPerformed(evt);
+            }
+        });
 
         jbUsarPista.setText("Usar Pista");
         jbUsarPista.addActionListener(new java.awt.event.ActionListener() {
@@ -307,7 +335,8 @@ public class Interfaz extends javax.swing.JFrame {
         JColorChooser color = new JColorChooser();
        Color=JColorChooser.showDialog(this,"Seleccione un color ", Color.BLUE);
        color.setBackground(Color);
-        
+       
+      
         
         
       
@@ -317,7 +346,45 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jbGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbGuardarActionPerformed
         // TODO add your handling code here:
+        try{
+            double Distancia=0;
+            int ID=Integer.parseInt(jtIdentificador.getText());
+            String tipoCarro=String.valueOf(jcTipo.getSelectedIndex());
+            String nombreCorredor = jtCorredor.getText();
+            int Escala = Color.getRGB();
+            int velocidadMinima = (tipoCarro.equals("Convertible")?30:((tipoCarro.equals("McQueen"))?40:20));
+            int velocidadMaxima = (tipoCarro.equals("Convertible")?30:((tipoCarro.equals("McQueen"))?40:20));
+            if(ValidarSiEsUnico(ID)){
+               Vehiculos.writeInt(ID);
+                Vehiculos.writeDouble(Distancia);
+                Vehiculos.writeUTF(nombreCorredor);
+                Vehiculos.writeInt(Escala);
+                Vehiculos.writeInt(velocidadMinima);
+                Vehiculos.writeInt(velocidadMaxima);
+                Vehiculos.writeUTF(tipoCarro); 
+                
+                JOptionPane.showMessageDialog(null, "Ya existe");
+              
+        }
+           
+            
+        }catch(IOException x){
+            
+        }
+            
+       
+        
+        
     }//GEN-LAST:event_jbGuardarActionPerformed
+
+    private void jcTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcTipoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jcTipoActionPerformed
+
+    private void jcAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcAgregarActionPerformed
+        // TODO add your handling code here:
+
+    }//GEN-LAST:event_jcAgregarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -353,6 +420,37 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
     }
+     public void Cajitas() throws IOException{
+        jcTipo.removeAllItems();
+        Vehiculos.seek(0);
+        while(Vehiculos.getFilePointer()<Vehiculos.length()){
+            jcTipo.addItem(String.valueOf(Vehiculos.readInt()));
+            Vehiculos.readDouble();
+            Vehiculos.readUTF();
+            Vehiculos.skipBytes(12);
+            Vehiculos.readUTF();
+        }
+    }
+    public boolean ValidarSiEsUnico(int IDESP) throws IOException{
+        Vehiculos.seek(0);
+        while(Vehiculos.getFilePointer()<Vehiculos.length()){
+            if(Vehiculos.readInt()==IDESP){
+                return false;
+                
+        }else{
+                Vehiculos.skipBytes(12);
+                Vehiculos.skipBytes(8);
+                Vehiculos.readUTF();
+                Vehiculos.readUTF();
+            }
+        }
+        return true;
+    }
+
+  
+
+    
+    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
@@ -381,3 +479,5 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JTextField jtPista;
     // End of variables declaration//GEN-END:variables
 }
+
+ 
