@@ -22,23 +22,22 @@ public class Interfaz extends javax.swing.JFrame {
     /**
      * Creates new form Interfaz
      */
+    boolean tabla;
     RandomAccessFile Vehiculos;
     private Color Color;
-    
-    public Interfaz(){
-        
-        try{
+
+    public Interfaz() {
+        tabla = false;
+
+        try {
             initComponents();
-            Vehiculos=new RandomAccessFile ("vehiculos.dr","rw");
+            Vehiculos = new RandomAccessFile("vehiculos.dr", "rw");
             Cajitas();
-            
-            
-            
-        }catch(IOException x){
-             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, x);
+
+        } catch (IOException x) {
+            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, x);
         }
-       
-        
+
     }
 
     /**
@@ -66,7 +65,7 @@ public class Interfaz extends javax.swing.JFrame {
         jcTipo = new javax.swing.JComboBox<>();
         jbUsarPista = new javax.swing.JButton();
         jbGuardar = new javax.swing.JButton();
-        jLabel5 = new javax.swing.JLabel();
+        jlNombre = new javax.swing.JLabel();
         jtPista = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
         jtLargo = new javax.swing.JTextField();
@@ -135,6 +134,7 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
 
+        jcTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "McQueen", "Convertible", "Nascar" }));
         jcTipo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jcTipoActionPerformed(evt);
@@ -155,7 +155,7 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
 
-        jLabel5.setText("Nombre Pista");
+        jlNombre.setText("Nombre Pista");
 
         jtPista.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -168,6 +168,11 @@ public class Interfaz extends javax.swing.JFrame {
         jtLargo.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jtLargoActionPerformed(evt);
+            }
+        });
+        jtLargo.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyTyped(java.awt.event.KeyEvent evt) {
+                jtLargoKeyTyped(evt);
             }
         });
 
@@ -239,7 +244,7 @@ public class Interfaz extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jbAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 84, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(32, 32, 32)
-                                .addComponent(jLabel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                .addComponent(jlNombre, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
@@ -275,7 +280,7 @@ public class Interfaz extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jbAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, 26, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jcAgregar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5)
+                    .addComponent(jlNombre)
                     .addComponent(jtPista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(22, 22, 22)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -304,6 +309,9 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jbContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbContinuarActionPerformed
         // TODO add your handling code here:
+        if(tabla){
+           ProBar();
+        }
     }//GEN-LAST:event_jbContinuarActionPerformed
 
     private void jtCorredorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtCorredorActionPerformed
@@ -316,6 +324,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jbUsarPistaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbUsarPistaActionPerformed
         // TODO add your handling code here:
+         
     }//GEN-LAST:event_jbUsarPistaActionPerformed
 
     private void jtPistaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtPistaActionPerformed
@@ -333,48 +342,40 @@ public class Interfaz extends javax.swing.JFrame {
     private void jbColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbColorActionPerformed
         // TODO add your handling code here:
         JColorChooser color = new JColorChooser();
-       Color=JColorChooser.showDialog(this,"Seleccione un color ", Color.BLUE);
-       color.setBackground(Color);
-       
-      
-        
-        
-      
-        
-        
+        Color = JColorChooser.showDialog(this, "Seleccione un color ", Color.BLUE);
+        color.setBackground(Color);
+
+
     }//GEN-LAST:event_jbColorActionPerformed
 
     private void jbGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbGuardarActionPerformed
         // TODO add your handling code here:
-        try{
-            double Distancia=0;
-            int ID=Integer.parseInt(jtIdentificador.getText());
-            String tipoCarro=String.valueOf(jcTipo.getSelectedIndex());
+        try {
+            double Distancia = 0;
+            int ID = Integer.parseInt(jtIdentificador.getText());
+            String tipoCarro = String.valueOf(jcTipo.getSelectedIndex());
             String nombreCorredor = jtCorredor.getText();
             int Escala = Color.getRGB();
-            int velocidadMinima = (tipoCarro.equals("Convertible")?30:((tipoCarro.equals("McQueen"))?40:20));
-            int velocidadMaxima = (tipoCarro.equals("Convertible")?30:((tipoCarro.equals("McQueen"))?40:20));
-            if(ValidarSiEsUnico(ID)){
-               Vehiculos.writeInt(ID);
+            int velocidadMinima = (tipoCarro.equals("Convertible") ? 30 : ((tipoCarro.equals("McQueen")) ? 40 : 20));
+            int velocidadMaxima = (tipoCarro.equals("Convertible") ? 30 : ((tipoCarro.equals("McQueen")) ? 40 : 20));
+            if (ValidarSiEsUnico(ID)) {
+                Vehiculos.writeInt(velocidadMinima);
+                Vehiculos.writeInt(velocidadMaxima);
+                Vehiculos.writeInt(ID);
                 Vehiculos.writeDouble(Distancia);
                 Vehiculos.writeUTF(nombreCorredor);
                 Vehiculos.writeInt(Escala);
-                Vehiculos.writeInt(velocidadMinima);
-                Vehiculos.writeInt(velocidadMaxima);
-                Vehiculos.writeUTF(tipoCarro); 
-                
+                Vehiculos.writeUTF(tipoCarro);
+                Cajitas();
                 JOptionPane.showMessageDialog(null, "Ya existe");
-              
+
+            }
+
+        } catch (IOException x) {
+
         }
-           
-            
-        }catch(IOException x){
-            
-        }
-            
-       
-        
-        
+
+
     }//GEN-LAST:event_jbGuardarActionPerformed
 
     private void jcTipoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcTipoActionPerformed
@@ -383,8 +384,16 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jcAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jcAgregarActionPerformed
         // TODO add your handling code here:
-
+ try {
+           Cajitas();
+        } catch (IOException ex) {
+        }
     }//GEN-LAST:event_jcAgregarActionPerformed
+
+    private void jtLargoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtLargoKeyTyped
+        // TODO add your handling code here:
+        
+    }//GEN-LAST:event_jtLargoKeyTyped
 
     /**
      * @param args the command line arguments
@@ -420,10 +429,16 @@ public class Interfaz extends javax.swing.JFrame {
             }
         });
     }
-     public void Cajitas() throws IOException{
+
+    public void ProBar(){
+        int fila = Integer.parseInt(String.valueOf(jTable1.getSelectedRow()));
+        int ID = Integer.parseInt(String.valueOf(jTable1.getValueAt(fila,0)));
+    }
+    
+    public void Cajitas() throws IOException {
         jcTipo.removeAllItems();
         Vehiculos.seek(0);
-        while(Vehiculos.getFilePointer()<Vehiculos.length()){
+        while (Vehiculos.getFilePointer() < Vehiculos.length()) {
             jcTipo.addItem(String.valueOf(Vehiculos.readInt()));
             Vehiculos.readDouble();
             Vehiculos.readUTF();
@@ -431,13 +446,14 @@ public class Interfaz extends javax.swing.JFrame {
             Vehiculos.readUTF();
         }
     }
-    public boolean ValidarSiEsUnico(int IDESP) throws IOException{
+
+    public boolean ValidarSiEsUnico(int IDESP) throws IOException {
         Vehiculos.seek(0);
-        while(Vehiculos.getFilePointer()<Vehiculos.length()){
-            if(Vehiculos.readInt()==IDESP){
+        while (Vehiculos.getFilePointer() < Vehiculos.length()) {
+            if (Vehiculos.readInt() == IDESP) {
                 return false;
-                
-        }else{
+
+            } else {
                 Vehiculos.skipBytes(12);
                 Vehiculos.skipBytes(8);
                 Vehiculos.readUTF();
@@ -447,17 +463,12 @@ public class Interfaz extends javax.swing.JFrame {
         return true;
     }
 
-  
-
-    
-    
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JLabel jLabel6;
     private javax.swing.JProgressBar jProgressBar1;
     private javax.swing.JScrollPane jScrollPane1;
@@ -472,6 +483,7 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JComboBox<String> jcAgregar;
     private javax.swing.JComboBox<String> jcTipo;
     private javax.swing.JLabel jlLargo;
+    private javax.swing.JLabel jlNombre;
     private javax.swing.JLabel jlPista;
     private javax.swing.JTextField jtCorredor;
     private javax.swing.JTextField jtIdentificador;
@@ -479,5 +491,3 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JTextField jtPista;
     // End of variables declaration//GEN-END:variables
 }
-
- 
