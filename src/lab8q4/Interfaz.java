@@ -7,6 +7,7 @@ package lab8q4;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.RandomAccessFile;
+import java.util.Random;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JColorChooser;
@@ -24,19 +25,18 @@ public class Interfaz extends javax.swing.JFrame {
      * Creates new form Interfaz
      */
     boolean tabla;
+    boolean empezar;
     RandomAccessFile Vehiculos;
-    private Color Color;
+    Color Color;
 
     public Interfaz() {
         tabla = false;
 
         try {
-
-            Vehiculos = new RandomAccessFile("vehiculos.dr", "rw");
+            Vehiculos = new RandomAccessFile("vehiculos.dr","rw");
             initComponents();
             Cajitas();
-
-        } catch (IOException x) {
+        }catch (IOException x) {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, x);
         }
 
@@ -93,21 +93,23 @@ public class Interfaz extends javax.swing.JFrame {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "Identicador", "Corredor", "Distancia"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Double.class, java.lang.String.class, java.lang.Double.class
+                java.lang.Long.class, java.lang.String.class, java.lang.Long.class
             };
 
             public Class getColumnClass(int columnIndex) {
                 return types [columnIndex];
+            }
+        });
+        jTable1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTable1MouseClicked(evt);
             }
         });
         jScrollPane1.setViewportView(jTable1);
@@ -212,9 +214,9 @@ public class Interfaz extends javax.swing.JFrame {
                         .addComponent(jbPausar, javax.swing.GroupLayout.PREFERRED_SIZE, 102, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
                         .addComponent(jLabel1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jlPista, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jlPista, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel2)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jlLargo, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -238,8 +240,7 @@ public class Interfaz extends javax.swing.JFrame {
                                         .addGap(0, 0, Short.MAX_VALUE))
                                     .addGroup(layout.createSequentialGroup()
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                        .addComponent(jtIdentificador, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                                        .addComponent(jtIdentificador, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)))
                                 .addGap(44, 44, 44)
                                 .addComponent(jLabel6, javax.swing.GroupLayout.PREFERRED_SIZE, 47, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
@@ -272,12 +273,13 @@ public class Interfaz extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                        .addComponent(jbContinuar)
-                        .addComponent(jbPausar)
-                        .addComponent(jLabel1)
-                        .addComponent(jLabel2)
-                        .addComponent(jlPista, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addComponent(jlPista, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jbContinuar)
+                            .addComponent(jbPausar)
+                            .addComponent(jLabel1)
+                            .addComponent(jLabel2)))
                     .addComponent(jlLargo, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jProgressBar1, javax.swing.GroupLayout.PREFERRED_SIZE, 76, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -290,11 +292,12 @@ public class Interfaz extends javax.swing.JFrame {
                     .addComponent(jlNombre)
                     .addComponent(jtPista, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(22, 22, 22)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel6)
-                    .addComponent(jtLargo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jtIdentificador))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jtIdentificador)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jLabel3)
+                        .addComponent(jLabel6)
+                        .addComponent(jtLargo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel4)
@@ -316,9 +319,9 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jbContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbContinuarActionPerformed
         // TODO add your handling code here:
-        if (tabla) {
-            ProBar();
-        }
+        hilo threads= new hilo();
+            threads.start();
+        empezar=true;
     }//GEN-LAST:event_jbContinuarActionPerformed
 
     private void jtCorredorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtCorredorActionPerformed
@@ -331,6 +334,15 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jbUsarPistaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbUsarPistaActionPerformed
         // TODO add your handling code here:
+        String label = jtPista.getText();
+        Long largo = Long.parseLong(jtLargo.getText());
+        if (largo > 0) {
+            jlPista.setText(label);
+            jlLargo.setText(jtLargo.getText());
+
+        } else {
+            JOptionPane.showMessageDialog(null, "Muy bajo");
+        }
 
     }//GEN-LAST:event_jbUsarPistaActionPerformed
 
@@ -344,13 +356,15 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jbReinicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbReinicarActionPerformed
         // TODO add your handling code here:
+        DefaultTableModel luego = (DefaultTableModel)jTable1.getModel();
+        luego.setRowCount(0);
     }//GEN-LAST:event_jbReinicarActionPerformed
 
     private void jbColorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbColorActionPerformed
         // TODO add your handling code here:
         JColorChooser color = new JColorChooser();
-        Color = JColorChooser.showDialog(this, "Seleccione un color ", Color.BLUE);
-        color.setBackground(Color);
+        Color = JColorChooser.showDialog(this, "Seleccione un color ", Color.blue);
+        jbColor.setBackground(Color);
 
 
     }//GEN-LAST:event_jbColorActionPerformed
@@ -358,26 +372,24 @@ public class Interfaz extends javax.swing.JFrame {
     private void jbGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbGuardarActionPerformed
         // TODO add your handling code here:
         try {
-            double Distancia = 0;
-            int ID = Integer.parseInt(jtIdentificador.getText());
+            long Distancia = 0;
+            int ID = Integer. parseInt(jtIdentificador.getText());
             String tipoCarro = String.valueOf(jcTipo.getSelectedItem());
             String nombreCorredor = jtCorredor.getText();
             int Escala = Color.getRGB();
-            int velocidadMinima = (tipoCarro.equals("Convertible") ? 30 : ((tipoCarro.equals("McQueen")) ? 40 : 20));
-            int velocidadMaxima = (tipoCarro.equals("Convertible") ? 30 : ((tipoCarro.equals("McQueen")) ? 40 : 20));
-            boolean corredor = false;
+            int velocidadMinima =(tipoCarro.equals("McQueen")?30:((tipoCarro.equals("Convertible"))?20:40));
+            int velocidadMaxima =(tipoCarro.equals("McQueen")?190:((tipoCarro.equals("Convertible"))?200:180));
+            
             if (ValidarSiEsUnico(ID)) {
-                Vehiculos.writeInt(velocidadMinima);
-                Vehiculos.writeInt(velocidadMaxima);
                 Vehiculos.writeInt(ID);
-                Vehiculos.writeDouble(Distancia);
+                Vehiculos.writeLong(Distancia);
                 Vehiculos.writeUTF(nombreCorredor);
                 Vehiculos.writeInt(Escala);
+                Vehiculos.writeInt(velocidadMinima);
+                Vehiculos.writeInt(velocidadMaxima);
                 Vehiculos.writeUTF(tipoCarro);
-                Cajitas();
-
                 JOptionPane.showMessageDialog(null, "Ya existe");
-
+                Cajitas();
             } else {
                 JOptionPane.showMessageDialog(null, "ingreasado");
             }
@@ -400,17 +412,36 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jtLargoKeyTyped(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jtLargoKeyTyped
         // TODO add your handling code here:
+        char carrera = evt.getKeyChar();
+        if (!Character.isDigit(carrera)) {
+            evt.consume();
+        }
+
 
     }//GEN-LAST:event_jtLargoKeyTyped
 
     private void jbAgregarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbAgregarActionPerformed
         // TODO add your handling code here:
         try {
-            Cajitas();
-        } catch (IOException ex) {
+            AgregarTabla();
+        } catch (IOException x) {
+            Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, x);
 
         }
     }//GEN-LAST:event_jbAgregarActionPerformed
+
+    private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
+        // TODO add your handling code here:
+        tabla = true;
+        if(empezar){
+            try {
+                TiraLed();
+                
+            } catch (IOException ex) {
+                Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+            }
+        }
+    }//GEN-LAST:event_jTable1MouseClicked
 
     /**
      * @param args the command line arguments
@@ -457,7 +488,7 @@ public class Interfaz extends javax.swing.JFrame {
         Vehiculos.seek(0);
         while (Vehiculos.getFilePointer() < Vehiculos.length()) {
             jcAgregar.addItem(String.valueOf(Vehiculos.readInt()));
-            Vehiculos.readDouble();
+            Vehiculos.readLong();
             Vehiculos.readUTF();
             Vehiculos.skipBytes(12);
             Vehiculos.readUTF();
@@ -474,43 +505,66 @@ public class Interfaz extends javax.swing.JFrame {
                 Vehiculos.skipBytes(12);
                 Vehiculos.skipBytes(8);
                 Vehiculos.readUTF();
+                Vehiculos.skipBytes(12);
                 Vehiculos.readUTF();
             }
         }
         return true;
     }
-     public boolean carroEnTabla(String id){
+
+
+    public boolean vehTable(String id) {
         int cantidadLista = jTable1.getRowCount();
         System.out.println(cantidadLista);
-        for(int i = 0;i<cantidadLista;i++){
-            System.out.println(jTable1.getValueAt(i,0));
-             if(jTable1.getValueAt(i, 0)==id){
-                 
-                 
-                 return true;
-             }
+        for (int i = 0; i < cantidadLista; i++) {
+            System.out.println(jTable1.getValueAt(i, 0));
+            if (jTable1.getValueAt(i, 0) == id) {
+
+                return true;
+            }
         }
-        
+
         return false;
-        
+
+    }
+    public int actualizar(String id){
+        for(int i=0; i<jTable1.getRowCount();i++){
+            if(String.valueOf(jTable1.getValueAt(i,0)).equals(id)){
+                return i;
+            }
+        }
+        return -1;
     }
 
     private void AgregarTabla() throws IOException {
         DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
         int ID = Integer.parseInt(String.valueOf(jcAgregar.getSelectedItem()));
         ValidarSiEsUnico(ID);
-        Double Distancia = Vehiculos.readDouble();
+        Long Distancia = Vehiculos.readLong();
         String corredor = Vehiculos.readUTF();
-        if (!carroEnTabla(String.valueOf(jcAgregar.getSelectedItem()))) {
-            Object[] i = {ID, corredor, Distancia};
-            modelo.addRow(i);
+        if (!vehTable(String.valueOf(jcAgregar.getSelectedItem()))) {
+            Object[] U = {ID, corredor, Distancia};
+            modelo.addRow(U);
         } else {
             JOptionPane.showMessageDialog(null, "Compitiendo");
         }
 
     }
-    
-
+     public void distancia(String id) throws IOException{
+        ValidarSiEsUnico(Integer.parseInt(id));
+        Random r = new Random();
+        Vehiculos.skipBytes(8);
+        Vehiculos.readUTF();
+        Vehiculos.skipBytes(4);
+        int min = Vehiculos.readInt();
+        int max = Vehiculos.readInt();
+        int distanciaNueva = r.nextInt(max-min) + min;
+        int row = actualizar(id);
+        int distanciaVieja = Integer.parseInt(String.valueOf(jTable1.getValueAt(row,2)));
+        int distanciaTotal = distanciaNueva+distanciaVieja;
+        jTable1.setValueAt(distanciaTotal, row, 2);
+        
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;
@@ -538,4 +592,68 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JTextField jtLargo;
     private javax.swing.JTextField jtPista;
     // End of variables declaration//GEN-END:variables
+
+    public void tiraled2() throws IOException{
+        
+        int lista= Integer.parseInt(String.valueOf(jTable1.getSelectedRow()));
+        if(lista !=-1){
+            int id = Integer.parseInt(String.valueOf(jTable1.getValueAt(lista,0)));
+            int distancia = Integer.parseInt(String.valueOf(jTable1.getValueAt(lista,2)));
+            ValidarSiEsUnico(id);
+            Vehiculos.skipBytes(8);
+            Vehiculos.readUTF();
+            int rgb = Vehiculos.readInt();
+            jProgressBar1.setBackground(new Color(rgb));
+            jProgressBar1.setVisible(true);
+            jProgressBar1.setValue(distancia);
+            jProgressBar1.repaint();
+            
+        }
+        
+        
+    }
+public void TiraLed() throws IOException{
+        
+        int lista = Integer.parseInt(String.valueOf(jTable1.getSelectedRow()));
+        if(lista !=-1){
+            int IDESP = Integer.parseInt(String.valueOf(jTable1.getValueAt(lista,0)));
+            int Distancia = Integer.parseInt(String.valueOf(jTable1.getValueAt(lista,2)));
+            ValidarSiEsUnico(IDESP);
+            System.out.println(IDESP);
+            Vehiculos.skipBytes(8);
+            Vehiculos.readUTF();
+            int rgb = Vehiculos.readInt();
+            jProgressBar1.setVisible(true);
+            jProgressBar1.setValue(Distancia);
+            jProgressBar1.repaint();
+            jProgressBar1.setBackground(new Color(rgb));
+        }
+        
+        
+    }
+class hilo extends Thread{
+        
+        public void run(){
+            while(true){
+            for(int i=0; i<jTable1.getRowCount();i++){
+                try{
+                    String id = String.valueOf(jTable1.getValueAt(i,0));
+                    distancia(id); 
+                    tiraled2();
+                   
+                    try{
+                        Thread.sleep(1000);
+                    }catch(InterruptedException e){
+                        e.printStackTrace();
+                        
+                    }
+                }catch(IOException ex){
+                    Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
+                    
+                }
+            }
+            }
+        }
+    }
+    
 }
