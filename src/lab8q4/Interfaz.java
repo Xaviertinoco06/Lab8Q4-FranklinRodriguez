@@ -33,10 +33,10 @@ public class Interfaz extends javax.swing.JFrame {
         tabla = false;
 
         try {
-            Vehiculos = new RandomAccessFile("vehiculos.dr","rw");
+            Vehiculos = new RandomAccessFile("vehiculos.dr", "rw");
             initComponents();
             Cajitas();
-        }catch (IOException x) {
+        } catch (IOException x) {
             Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, x);
         }
 
@@ -319,9 +319,9 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jbContinuarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbContinuarActionPerformed
         // TODO add your handling code here:
-        hilo threads= new hilo();
-            threads.start();
-        empezar=true;
+        hilo threads = new hilo();
+        threads.start();
+        empezar = true;
     }//GEN-LAST:event_jbContinuarActionPerformed
 
     private void jtCorredorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jtCorredorActionPerformed
@@ -356,7 +356,7 @@ public class Interfaz extends javax.swing.JFrame {
 
     private void jbReinicarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbReinicarActionPerformed
         // TODO add your handling code here:
-        DefaultTableModel luego = (DefaultTableModel)jTable1.getModel();
+        DefaultTableModel luego = (DefaultTableModel) jTable1.getModel();
         luego.setRowCount(0);
     }//GEN-LAST:event_jbReinicarActionPerformed
 
@@ -373,14 +373,14 @@ public class Interfaz extends javax.swing.JFrame {
         // TODO add your handling code here:
         try {
             long Distancia = 0;
-            int ID = Integer. parseInt(jtIdentificador.getText());
+            int ID = Integer.parseInt(jtIdentificador.getText());
             String tipoCarro = String.valueOf(jcTipo.getSelectedItem());
             String nombreCorredor = jtCorredor.getText();
             int Escala = Color.getRGB();
-            int velocidadMinima =(tipoCarro.equals("McQueen")?30:((tipoCarro.equals("Convertible"))?20:40));
-            int velocidadMaxima =(tipoCarro.equals("McQueen")?190:((tipoCarro.equals("Convertible"))?200:180));
-            
-            if (ValidarSiEsUnico(ID)) {
+            int velocidadMinima = (tipoCarro.equals("McQueen") ? 30 : ((tipoCarro.equals("Convertible")) ? 20 : 40));
+            int velocidadMaxima = (tipoCarro.equals("McQueen") ? 190 : ((tipoCarro.equals("Convertible")) ? 200 : 180));
+
+            if (empezar(ID)) {
                 Vehiculos.writeInt(ID);
                 Vehiculos.writeLong(Distancia);
                 Vehiculos.writeUTF(nombreCorredor);
@@ -390,8 +390,7 @@ public class Interfaz extends javax.swing.JFrame {
                 Vehiculos.writeUTF(tipoCarro);
                 JOptionPane.showMessageDialog(null, "Ya existe");
                 Cajitas();
-            } else {
-                JOptionPane.showMessageDialog(null, "ingreasado");
+          
             }
 
         } catch (IOException x) {
@@ -433,10 +432,10 @@ public class Interfaz extends javax.swing.JFrame {
     private void jTable1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTable1MouseClicked
         // TODO add your handling code here:
         tabla = true;
-        if(empezar){
+        if (empezar) {
             try {
                 TiraLed();
-                
+
             } catch (IOException ex) {
                 Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -495,23 +494,6 @@ public class Interfaz extends javax.swing.JFrame {
         }
     }
 
-    public boolean ValidarSiEsUnico(int IDESP) throws IOException {
-        Vehiculos.seek(0);
-        while (Vehiculos.getFilePointer() < Vehiculos.length()) {
-            if (Vehiculos.readInt() == IDESP) {
-                return false;
-
-            } else {
-                Vehiculos.skipBytes(12);
-                Vehiculos.skipBytes(8);
-                Vehiculos.readUTF();
-                Vehiculos.skipBytes(12);
-                Vehiculos.readUTF();
-            }
-        }
-        return true;
-    }
-
 
     public boolean vehTable(String id) {
         int cantidadLista = jTable1.getRowCount();
@@ -527,9 +509,10 @@ public class Interfaz extends javax.swing.JFrame {
         return false;
 
     }
-    public int actualizar(String id){
-        for(int i=0; i<jTable1.getRowCount();i++){
-            if(String.valueOf(jTable1.getValueAt(i,0)).equals(id)){
+
+    public int actualizar(String id) {
+        for (int i = 0; i < jTable1.getRowCount(); i++) {
+            if (String.valueOf(jTable1.getValueAt(i, 0)).equals(id)) {
                 return i;
             }
         }
@@ -539,7 +522,7 @@ public class Interfaz extends javax.swing.JFrame {
     private void AgregarTabla() throws IOException {
         DefaultTableModel modelo = (DefaultTableModel) jTable1.getModel();
         int ID = Integer.parseInt(String.valueOf(jcAgregar.getSelectedItem()));
-        ValidarSiEsUnico(ID);
+      
         Long Distancia = Vehiculos.readLong();
         String corredor = Vehiculos.readUTF();
         if (!vehTable(String.valueOf(jcAgregar.getSelectedItem()))) {
@@ -550,20 +533,21 @@ public class Interfaz extends javax.swing.JFrame {
         }
 
     }
-     public void distancia(String id) throws IOException{
-        ValidarSiEsUnico(Integer.parseInt(id));
+
+    public void distancia(String id) throws IOException {
+    
         Random r = new Random();
         Vehiculos.skipBytes(8);
         Vehiculos.readUTF();
         Vehiculos.skipBytes(4);
         int min = Vehiculos.readInt();
         int max = Vehiculos.readInt();
-        int distanciaNueva = r.nextInt(max-min) + min;
+        int distanciaNueva = r.nextInt(max - min) + min;
         int row = actualizar(id);
-        int distanciaVieja = Integer.parseInt(String.valueOf(jTable1.getValueAt(row,2)));
-        int distanciaTotal = distanciaNueva+distanciaVieja;
+        int distanciaVieja = Integer.parseInt(String.valueOf(jTable1.getValueAt(row, 2)));
+        int distanciaTotal = distanciaNueva + distanciaVieja;
         jTable1.setValueAt(distanciaTotal, row, 2);
-        
+
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -593,13 +577,13 @@ public class Interfaz extends javax.swing.JFrame {
     private javax.swing.JTextField jtPista;
     // End of variables declaration//GEN-END:variables
 
-    public void tiraled2() throws IOException{
+    public void tiraled2() throws IOException {
+
+        int lista = Integer.parseInt(String.valueOf(jTable1.getSelectedRow()));
+        if (lista != -1) {
+            int id = Integer.parseInt(String.valueOf(jTable1.getValueAt(lista, 0)));
+            int distancia = Integer.parseInt(String.valueOf(jTable1.getValueAt(lista, 2)));
         
-        int lista= Integer.parseInt(String.valueOf(jTable1.getSelectedRow()));
-        if(lista !=-1){
-            int id = Integer.parseInt(String.valueOf(jTable1.getValueAt(lista,0)));
-            int distancia = Integer.parseInt(String.valueOf(jTable1.getValueAt(lista,2)));
-            ValidarSiEsUnico(id);
             Vehiculos.skipBytes(8);
             Vehiculos.readUTF();
             int rgb = Vehiculos.readInt();
@@ -607,18 +591,18 @@ public class Interfaz extends javax.swing.JFrame {
             jProgressBar1.setVisible(true);
             jProgressBar1.setValue(distancia);
             jProgressBar1.repaint();
-            
+
         }
-        
-        
+
     }
-public void TiraLed() throws IOException{
-        
+
+    public void TiraLed() throws IOException {
+
         int lista = Integer.parseInt(String.valueOf(jTable1.getSelectedRow()));
-        if(lista !=-1){
-            int IDESP = Integer.parseInt(String.valueOf(jTable1.getValueAt(lista,0)));
-            int Distancia = Integer.parseInt(String.valueOf(jTable1.getValueAt(lista,2)));
-            ValidarSiEsUnico(IDESP);
+        if (lista != -1) {
+            int IDESP = Integer.parseInt(String.valueOf(jTable1.getValueAt(lista, 0)));
+            int Distancia = Integer.parseInt(String.valueOf(jTable1.getValueAt(lista, 2)));
+           
             System.out.println(IDESP);
             Vehiculos.skipBytes(8);
             Vehiculos.readUTF();
@@ -628,32 +612,32 @@ public void TiraLed() throws IOException{
             jProgressBar1.repaint();
             jProgressBar1.setBackground(new Color(rgb));
         }
-        
-        
+
     }
-class hilo extends Thread{
-        
-        public void run(){
-            while(true){
-            for(int i=0; i<jTable1.getRowCount();i++){
-                try{
-                    String id = String.valueOf(jTable1.getValueAt(i,0));
-                    distancia(id); 
-                    tiraled2();
-                   
-                    try{
-                        Thread.sleep(1000);
-                    }catch(InterruptedException e){
-                        e.printStackTrace();
-                        
+
+    class hilo extends Thread {
+
+        public void run() {
+            while (true) {
+                for (int i = 0; i < jTable1.getRowCount(); i++) {
+                    try {
+                        String id = String.valueOf(jTable1.getValueAt(i, 0));
+                        distancia(id);
+                        tiraled2();
+
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+
+                        }
+                    } catch (IOException x) {
+                        Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, x);
+
                     }
-                }catch(IOException ex){
-                    Logger.getLogger(Interfaz.class.getName()).log(Level.SEVERE, null, ex);
-                    
                 }
-            }
             }
         }
     }
-    
+
 }

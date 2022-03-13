@@ -16,6 +16,11 @@ public class McQueen extends Carros{
         velocidadMaxima=190;
         
     }
+
+    @Override
+    public String toString() {
+        return "McQueen{" + '}';
+    }
     
     
 }
